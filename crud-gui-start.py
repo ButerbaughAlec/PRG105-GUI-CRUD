@@ -8,7 +8,6 @@ class CrudGUI:
     def __init__(self, master):
         self.master = master
         self.master.title('Welcome Menu')
-        self.radio_var = 0
 
         self.top_frame = tkinter.Frame(self.master)
         self.bottom_frame = tkinter.Frame(self.master)
@@ -21,7 +20,7 @@ class CrudGUI:
                                         variable=self.radio_var, value=1)
         self.add = tkinter.Radiobutton(self.top_frame, text='Add Customer',
                                        variable=self.radio_var, value=2)
-        self.change = tkinter.Radiobutton(self.top_frame, text='Change customer email',
+        self.change = tkinter.Radiobutton(self.top_frame, text='Change customer info',
                                           variable=self.radio_var, value=3)
         self.delete = tkinter.Radiobutton(self.top_frame, text='Delete customer',
                                           variable=self.radio_var, value=4)
@@ -46,15 +45,13 @@ class CrudGUI:
 
     def open_menu(self):
         if self.radio_var.get() == 1:
-            search = LookGUI(self.master)
+            LookGUI(self.master)
         elif self.radio_var.get() == 2:
-            add = AddGUI(self.master)
+            AddGUI(self.master)
         elif self.radio_var.get() == 3:
-            change = ChangeGUI(self.master)
-        elif self.radio_var.get() == 4:
-            delete = DeleteGUI(self.master)
+            ChangeGUI(self.master)
         else:
-            tkinter.messagebox.showinfo('Function', 'still under construction')
+            DeleteGUI(self.master)
 
 
 class LookGUI:
@@ -123,14 +120,13 @@ class AddGUI:
         try:
             input_file = open("customer_file.dat", 'rb')
             self.customers = pickle.load(input_file)
-            pickle.dump(customer_file, input_file)
             input_file.close()
         except (FileNotFoundError, IOError):
             self.customers = {}
 
         # tkinter.Toplevel() is like tkinter.Frame() but it opens in a new window
         self.look = tkinter.Toplevel(master)
-        self.look.title('Add customer')
+        self.look.title('Search for customer')
 
         # create Frames for this Toplevel window
         self.top_frame = tkinter.Frame(self.look)
@@ -170,19 +166,18 @@ class AddGUI:
     def add(self):
         name = self.add_entry.get()
 
-
     def back(self):
         self.look.destroy()
 
 
 def main():
-
     # create a window
     root = tkinter.Tk()
+    root.geometry("300x150")
     # call the GUI and send it the root menu
-    menu_gui = CrudGUI(root)
-
+    CrudGUI(root)
     # control the mainloop from main instead of the class
     root.mainloop()
+
 
 main()
