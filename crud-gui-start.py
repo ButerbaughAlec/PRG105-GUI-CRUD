@@ -84,7 +84,7 @@ class LookGUI:
 
         # middle frame - label for results
         self.value = tkinter.StringVar()
-        self.info = tkinter.Label(self.middle_frame, text='Results: ')
+        self.info = tkinter.Label(self.middle_frame, text='Email: ')
         self.result_label = tkinter.Label(self.middle_frame, textvariable=self.value)
 
         # pack Middle frame
@@ -126,7 +126,7 @@ class AddGUI:
 
         # tkinter.Toplevel() is like tkinter.Frame() but it opens in a new window
         self.look = tkinter.Toplevel(master)
-        self.look.title('Search for customer')
+        self.look.title('Add customer')
 
         # create Frames for this Toplevel window
         self.top_frame = tkinter.Frame(self.look)
@@ -136,14 +136,18 @@ class AddGUI:
         # widgets for top frame - label and entry box for name
         self.add_label = tkinter.Label(self.top_frame, text='Enter customer name to add: ')
         self.add_entry = tkinter.Entry(self.top_frame, width=15)
+        self.add2_label = tkinter.Label(self.middle_frame, text='Enter customer email to add: ')
+        self.add2_entry = tkinter.Entry(self.middle_frame, width=15)
 
         # pack top frame
         self.add_label.pack(side='left')
         self.add_entry.pack(side='left')
+        self.add2_label.pack(side='left')
+        self.add2_entry.pack(side='left')
 
         # middle frame - label for results
         self.value = tkinter.StringVar()
-        self.info = tkinter.Label(self.middle_frame, text='Results: ')
+        self.info = tkinter.Label(self.middle_frame)
         self.result_label = tkinter.Label(self.middle_frame, textvariable=self.value)
 
         # pack Middle frame
@@ -165,6 +169,151 @@ class AddGUI:
 
     def add(self):
         name = self.add_entry.get()
+        email = self.add2_entry.get()
+        if name not in self.customers:
+            self.customers[name] = email
+            save_file = open("customer_file.dat", 'wb')
+            pickle.dump(self.customers, save_file)
+            save_file.close()
+            tkinter.messagebox.showinfo("Name added", "The selected name has been added.")
+        else:
+            print("Error")
+
+    def back(self):
+        self.look.destroy()
+
+
+class ChangeGUI:
+    def __init__(self, master):
+
+        # open the file, load to customers, close file. Do in each class
+        try:
+            input_file = open("customer_file.dat", 'rb')
+            self.customers = pickle.load(input_file)
+            input_file.close()
+        except (FileNotFoundError, IOError):
+            self.customers = {}
+
+        # tkinter.Toplevel() is like tkinter.Frame() but it opens in a new window
+        self.look = tkinter.Toplevel(master)
+        self.look.title('Change customer info')
+
+        # create Frames for this Toplevel window
+        self.top_frame = tkinter.Frame(self.look)
+        self.middle_frame = tkinter.Frame(self.look)
+        self.bottom_frame = tkinter.Frame(self.look)
+
+        # widgets for top frame - label and entry box for name
+        self.change_label = tkinter.Label(self.top_frame, text='Enter customer name to change: ')
+        self.change_entry = tkinter.Entry(self.top_frame, width=15)
+        self.change2_label = tkinter.Label(self.middle_frame, text='Enter new email: ')
+        self.change2_entry = tkinter.Entry(self.middle_frame, width=15)
+
+        # pack top frame
+        self.change_label.pack(side='left')
+        self.change_entry.pack(side='left')
+        self.change2_label.pack(side='left')
+        self.change2_entry.pack(side='left')
+
+        # middle frame - label for results
+        self.value = tkinter.StringVar()
+        self.info = tkinter.Label(self.middle_frame)
+        self.result_label = tkinter.Label(self.middle_frame, textvariable=self.value)
+
+        # pack Middle frame
+        self.info.pack(side='left')
+        self.result_label.pack(side='left')
+
+        # buttons for bottom frame
+        self.change_button = tkinter.Button(self.bottom_frame, text='Change', command=self.change)
+        self.back_button = tkinter.Button(self.bottom_frame, text='Main Menu', command=self.back)
+
+        # pack bottom frame
+        self.change_button.pack(side='left')
+        self.back_button.pack(side='left')
+
+        # pack frames
+        self.top_frame.pack()
+        self.middle_frame.pack()
+        self.bottom_frame.pack()
+
+    def change(self):
+        name = self.change_entry.get()
+        email = self.change2_entry.get()
+        if name in self.customers:
+            self.customers[name] = email
+            save_file = open("customer_file.dat", 'wb')
+            pickle.dump(self.customers, save_file)
+            save_file.close()
+            tkinter.messagebox.showinfo("Name changed", "The selected name has been changed.")
+
+        else:
+            print("Error")
+
+    def back(self):
+        self.look.destroy()
+
+
+class DeleteGUI:
+    def __init__(self, master):
+
+        # open the file, load to customers, close file. Do in each class
+        try:
+            input_file = open("customer_file.dat", 'rb')
+            self.customers = pickle.load(input_file)
+            input_file.close()
+        except (FileNotFoundError, IOError):
+            self.customers = {}
+
+        # tkinter.Toplevel() is like tkinter.Frame() but it opens in a new window
+        self.look = tkinter.Toplevel(master)
+        self.look.title('Delete customer info')
+
+        # create Frames for this Toplevel window
+        self.top_frame = tkinter.Frame(self.look)
+        self.middle_frame = tkinter.Frame(self.look)
+        self.bottom_frame = tkinter.Frame(self.look)
+
+        # widgets for top frame - label and entry box for name
+        self.del_label = tkinter.Label(self.top_frame, text='Enter customer name to delete: ')
+        self.del_entry = tkinter.Entry(self.top_frame, width=15)
+
+        # pack top frame
+        self.del_label.pack(side='left')
+        self.del_entry.pack(side='left')
+
+        # middle frame - label for results
+        self.value = tkinter.StringVar()
+        self.info = tkinter.Label(self.middle_frame)
+        self.result_label = tkinter.Label(self.middle_frame, textvariable=self.value)
+
+        # pack Middle frame
+        self.info.pack(side='left')
+        self.result_label.pack(side='left')
+
+        # buttons for bottom frame
+        self.del_button = tkinter.Button(self.bottom_frame, text='Delete', command=self.delete)
+        self.back_button = tkinter.Button(self.bottom_frame, text='Main Menu', command=self.back)
+
+        # pack bottom frame
+        self.del_button.pack(side='left')
+        self.back_button.pack(side='left')
+
+        # pack frames
+        self.top_frame.pack()
+        self.middle_frame.pack()
+        self.bottom_frame.pack()
+
+    def delete(self):
+        name = self.del_entry.get()
+        if name in self.customers:
+            del self.customers[name]
+            save_file = open("customer_file.dat", 'wb')
+            pickle.dump(self.customers, save_file)
+            save_file.close()
+            tkinter.messagebox.showinfo("Name deleted", "The selected name has been deleted.")
+        else:
+            print("Error")
 
     def back(self):
         self.look.destroy()
